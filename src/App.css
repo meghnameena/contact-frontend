@@ -1,0 +1,47 @@
+.contact-container {
+  width: 500px;
+  max-width: 90%;
+  margin: 50px auto;
+}
+
+.contact-container h1 {
+  text-align: center;
+}
+
+.contact-container p {
+  text-align: center;
+}
+
+.contact-container form {
+  margin-top: 30px;
+}
+
+.contact-container div {
+  margin-bottom: 15px;
+}
+
+.contact-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.contact-container input,
+.contact-container textarea {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.contact-container textarea {
+  height: 120px;
+}
+
+.contact-container button {
+  width: 100%;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.status {
+  margin-top: 15px;
+}
