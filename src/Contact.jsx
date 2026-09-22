@@ -12,6 +12,39 @@ function Contact() {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [location, setLocation] = useState(null);
+  const [locationStatus, setLocationStatus] = useState("");
+
+  const getLocation = () => {
+  if (!navigator.geolocation) {
+    setLocationStatus("Location is not supported by your browser ❌");
+    return;
+  }
+
+  setLocationStatus("Getting your location...");
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      setLocation({
+        latitude,
+        longitude,
+      });
+
+      setLocationStatus("Location captured successfully! 📍");
+    },
+    (error) => {
+      console.error("Location Error:", error);
+
+      setLocationStatus(
+        "Unable to get location. Please allow location permission."
+      );
+    }
+  );
+};
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -31,7 +64,12 @@ function Contact() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+        ...formData,
+        locationUrl: location
+          ? `https://www.google.com/maps?q=${location.latitude},${location.longitude}`
+          : "",
+}),
       });
 
       const result = await response.json();
@@ -68,12 +106,7 @@ function Contact() {
         <div>
           <label>Name</label>
 
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
+          <input type="text"name="name"value={formData.name}onChange={handleChange} placeholder="Enter your name"
             required
           />
         </div>
@@ -81,12 +114,7 @@ function Contact() {
         <div>
           <label>Email</label>
 
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
+          <input type="email"name="email"value={formData.email}onChange={handleChange}placeholder="Enter your email"
             required
           />
         </div>
@@ -94,12 +122,7 @@ function Contact() {
         <div>
           <label>Phone</label>
 
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Enter your phone"
+          <input type="tel" name="phone" value={formData.phone} onChange={handleChange}  placeholder="Enter your phone"
             required
           />
         </div>
@@ -107,12 +130,7 @@ function Contact() {
         <div>
           <label>Subject</label>
 
-          <input
-            type="text"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            placeholder="Enter subject"
+          <input type="text"  name="subject"  value={formData.subject} onChange={handleChange}  placeholder="Enter subject"
             required
           />
         </div>
@@ -120,15 +138,30 @@ function Contact() {
         <div>
           <label>Message</label>
 
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Enter your message"
-            rows="5"
+          <textarea name="message" value={formData.message} onChange={handleChange} placeholder="Enter your message" rows="5"
             required
           ></textarea>
         </div>
+
+        <div className="location-box">
+        <button
+          type="button"
+          onClick={getLocation}
+          className="location-btn"
+        >
+          📍 Share My Location
+        </button>
+
+        {locationStatus && (
+          <p className="location-status">{locationStatus}</p>
+        )}
+
+        {location && (
+          <p className="location-coordinates">
+            📍 Location captured
+          </p>
+        )}
+      </div>
 
         <button type="submit" disabled={loading}>
           {loading ? "Sending..." : "Send Message"}
